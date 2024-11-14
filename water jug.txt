@@ -1,0 +1,45 @@
+from collections import deque
+
+# BFS to solve the water jug problem
+def water_jug_solver(jug_x, jug_y, goal):
+    visited = set()
+    queue = deque([(0, 0)])  # Start with both jugs empty
+    path = []
+
+    while queue:
+        x, y = queue.popleft()
+        
+        if (x, y) in visited:
+            continue
+        visited.add((x, y))
+        path.append((x, y))
+        
+        # Check if we've reached the goal
+        if x == goal or y == goal:
+            return path
+
+        # Possible moves
+        queue.extend([
+            (jug_x, y),       # Fill Jug X
+            (x, jug_y),       # Fill Jug Y
+            (0, y),           # Empty Jug X
+            (x, 0),           # Empty Jug Y
+            (min(x + y, jug_x), y - (min(x + y, jug_x) - x)),  # Pour Y into X
+            (x - (min(x + y, jug_y) - y), min(x + y, jug_y))   # Pour X into Y
+        ])
+
+    return "No solution"
+
+# Parameters
+jug_x = 4
+jug_y = 3
+goal = 2
+
+# Solve and display the solution
+solution = water_jug_solver(jug_x, jug_y, goal)
+if solution != "No solution":
+    print("Solution steps:")
+    for step in solution:
+        print(f"Jug X: {step[0]} liters, Jug Y: {step[1]} liters")
+else:
+    print(solution)

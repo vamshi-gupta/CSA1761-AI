@@ -1,0 +1,7 @@
+person(chandu, 2004, 12d, 10).
+
+dob(Name, Year, Month, Day) :-
+    person(Name, Year, Month, Day).
+
+name(Year, Month, Day, Name) :-
+    person(Name, Year, Month, Day).

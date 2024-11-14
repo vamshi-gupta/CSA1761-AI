@@ -1,0 +1,25 @@
+# Function to simulate the vacuum cleaner problem
+def vacuum_cleaner(start, room_states):
+    position = start
+    steps = []
+
+    while room_states != [0, 0]:  # Keep cleaning until both rooms are clean
+        if room_states[position] == 1:  # If the current room is dirty
+            room_states[position] = 0   # Clean it
+            steps.append(f"Cleaned room {position}")
+        else:
+            # Move to the other room
+            position = 1 - position
+            steps.append(f"Moved to room {position}")
+
+    return steps
+
+# Room states: 1 = Dirty, 0 = Clean
+start_position = 0
+rooms = [1, 1]  # Both rooms start dirty
+
+# Solve and display the steps
+solution = vacuum_cleaner(start_position, rooms)
+print("Solution steps:")
+for step in solution:
+    print(step)

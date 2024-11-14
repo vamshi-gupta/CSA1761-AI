@@ -1,0 +1,43 @@
+# Function to check if the color assignment is valid
+def is_valid(map_graph, color, assignment, region):
+    for neighbor in map_graph[region]:
+        if assignment.get(neighbor) == color:
+            return False
+    return True
+
+# Backtracking function for map coloring
+def map_coloring(map_graph, colors, assignment={}, region=None):
+    if region is None:
+        region = next(iter(map_graph))  # Start with any region
+
+    if len(assignment) == len(map_graph):  # All regions are colored
+        return assignment
+
+    for color in colors:
+        if is_valid(map_graph, color, assignment, region):
+            assignment[region] = color
+            # Recursively color the next region
+            for next_region in map_graph:
+                if next_region not in assignment:
+                    result = map_coloring(map_graph, colors, assignment, next_region)
+                    if result:
+                        return result
+            # Backtrack if no valid color assignment was found
+            del assignment[region]
+
+    return None
+
+# Example map (graph) with neighboring regions
+map_graph = {
+    'A': ['B', 'C', 'D'],
+    'B': ['A', 'D'],
+    'C': ['A', 'D'],
+    'D': ['A', 'B', 'C']
+}
+
+# List of colors
+colors = ['Red', 'Green', 'Blue']
+
+# Solve and display the color assignment
+solution = map_coloring(map_graph, colors)
+print("Color Assignment:", solution if solution else "No solution found")

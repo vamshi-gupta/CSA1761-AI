@@ -1,0 +1,80 @@
+import heapq
+
+# Function to get the position of a tile
+def get_position(state, tile):
+    for i in range(3):
+        for j in range(3):
+            if state[i][j] == tile:
+                return i, j
+
+# Heuristic function: Manhattan Distance
+def manhattan_distance(state, goal):
+    distance = 0
+    for i in range(3):
+        for j in range(3):
+            if state[i][j] != 0:
+                x, y = get_position(goal, state[i][j])
+                distance += abs(i - x) + abs(j - y)
+    return distance
+
+# Generate possible moves from current state
+def generate_moves(state):
+    x, y = get_position(state, 0)  # Find the blank tile
+    moves = []
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, down, left, right
+    
+    for dx, dy in directions:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < 3 and 0 <= ny < 3:
+            new_state = [row[:] for row in state]
+            new_state[x][y], new_state[nx][ny] = new_state[nx][ny], new_state[x][y]
+            moves.append(new_state)
+    return moves
+
+# A* algorithm
+def solve_puzzle(start, goal):
+    queue = []
+    heapq.heappush(queue, (0, start, []))  # (cost, state, path)
+    visited = set()
+
+    while queue:
+        cost, current, path = heapq.heappop(queue)
+        if current == goal:
+            return path + [current]
+
+        current_tuple = tuple(tuple(row) for row in current)
+        if current_tuple in visited:
+            continue
+        visited.add(current_tuple)
+
+        for move in generate_moves(current):
+            heapq.heappush(queue, (len(path) + 1 + manhattan_distance(move, goal), move, path + [current]))
+    return None
+
+# Print the puzzle state
+def print_puzzle(state):
+    for row in state:
+        print(row)
+    print()
+
+# Initial and goal states
+start_state = [
+    [1, 2, 3],
+    [5, 6, 0],
+    [7, 8, 4]
+]
+
+goal_state = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 0]
+]
+
+# Solve and display solution
+solution = solve_puzzle(start_state, goal_state)
+if solution:
+    print("Solution found in", len(solution) - 1, "moves:")
+    for step in solution:
+        print_puzzle(step)
+else:
+    print("No solution exists.")

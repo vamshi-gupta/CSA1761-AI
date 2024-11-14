@@ -1,0 +1,36 @@
+from itertools import permutations
+
+# Function to calculate the total distance of a path
+def calculate_path_cost(graph, path):
+    cost = 0
+    for i in range(len(path) - 1):
+        cost += graph[path[i]][path[i + 1]]
+    cost += graph[path[-1]][path[0]]  # Return to the starting point
+    return cost
+
+# Function to solve TSP using brute-force
+def tsp(graph):
+    cities = list(graph.keys())
+    min_path = None
+    min_cost = float('inf')
+    
+    for path in permutations(cities):
+        cost = calculate_path_cost(graph, path)
+        if cost < min_cost:
+            min_cost = cost
+            min_path = path
+            
+    return min_path, min_cost
+
+# Example graph represented as a distance matrix
+graph = {
+    'A': {'A': 0, 'B': 10, 'C': 15, 'D': 20},
+    'B': {'A': 10, 'B': 0, 'C': 35, 'D': 25},
+    'C': {'A': 15, 'B': 35, 'C': 0, 'D': 30},
+    'D': {'A': 20, 'B': 25, 'C': 30, 'D': 0}
+}
+
+# Solve TSP and display the result
+optimal_path, optimal_cost = tsp(graph)
+print("Optimal Path:", " -> ".join(optimal_path))
+print("Minimum Cost:", optimal_cost)
